@@ -933,7 +933,7 @@ static struct kgsl_device_platform_data kgsl_2d0_pdata = {
 		},
 		{
 			.gpu_freq = 160000000,
-			.bus_freq = 0,
+			.bus_freq = 1,
 		},
 #else
 		{
@@ -1004,7 +1004,7 @@ static struct kgsl_device_platform_data kgsl_2d1_pdata = {
                 },
                 {
                         .gpu_freq = 160000000,
-                        .bus_freq = 0,
+                        .bus_freq = 1,
                 },
 #else
                 {
