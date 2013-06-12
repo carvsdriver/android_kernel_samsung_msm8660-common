@@ -927,24 +927,15 @@ static struct kgsl_device_platform_data kgsl_2d0_pdata = {
 			.gpu_freq = 228571000,
 			.bus_freq = 2,
 		},
-		{
-			.gpu_freq = 200000000,
-			.bus_freq = 1,
-		},
-		{
-			.gpu_freq = 160000000,
-			.bus_freq = 0,
-		},
-#else
-		{
-			.gpu_freq = 200000000,
-			.bus_freq = 1,
-		},
-		{
-			.gpu_freq = 200000000,
-			.bus_freq = 0,
-		},
 #endif
+		{
+			.gpu_freq = 200000000,
+			.bus_freq = 1,
+		},
+		{
+			.gpu_freq = 200000000,
+			.bus_freq = 0,
+		},
 	},
 #ifdef CONFIG_KGSL_GPU_CTRL
 	.init_level = 4,
@@ -998,24 +989,15 @@ static struct kgsl_device_platform_data kgsl_2d1_pdata = {
                         .gpu_freq = 228571000,
                         .bus_freq = 2,
                 },
-                {
-                        .gpu_freq = 200000000,
-                        .bus_freq = 1,
-                },
-                {
-                        .gpu_freq = 160000000,
-                        .bus_freq = 0,
-                },
-#else
-                {
-                        .gpu_freq = 200000000,
-                        .bus_freq = 1,
-                },
-                {
-                        .gpu_freq = 200000000,
-                        .bus_freq = 0,
-                },
 #endif
+                {
+                        .gpu_freq = 200000000,
+                        .bus_freq = 1,
+                },
+                {
+                        .gpu_freq = 200000000,
+                        .bus_freq = 0,
+                },
 	},
 #ifdef CONFIG_KGSL_GPU_CTRL
 	.init_level = 4,
