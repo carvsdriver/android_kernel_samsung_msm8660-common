@@ -938,7 +938,7 @@ static struct kgsl_device_platform_data kgsl_2d0_pdata = {
 		},
 	},
 #ifdef CONFIG_KGSL_GPU_CTRL
-	.init_level = 3,
+	.init_level = 4,
 	.num_levels = 4,
 #else
 	.init_level = 0,
@@ -1000,7 +1000,7 @@ static struct kgsl_device_platform_data kgsl_2d1_pdata = {
                 },
 	},
 #ifdef CONFIG_KGSL_GPU_CTRL
-	.init_level = 3,
+	.init_level = 4,
 	.num_levels = 4,
 #else
 	.init_level = 0,
