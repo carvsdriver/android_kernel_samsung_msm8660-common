@@ -103,11 +103,17 @@ static inline int _adjust_pwrlevel(struct kgsl_pwrctrl *pwr, int level)
 	int max_pwrlevel = max_t(int, pwr->thermal_pwrlevel, pwr->max_pwrlevel);
 	int min_pwrlevel = max_t(int, pwr->thermal_pwrlevel, pwr->min_pwrlevel);
 
-	if (level < max_pwrlevel)
-		return max_pwrlevel;
-	if (level > min_pwrlevel)
-		return min_pwrlevel;
-
+#ifdef CONFIG_KGSL_GPU_CTRL
+	if (level < gpu_max_3d_freq_phase)
+		return gpu_max_3d_freq_phase;
+	if (level > gpu_min_3d_freq_phase)
+		return gpu_min_3d_freq_phase;
+#else
+        if (level < max_pwrlevel)
+                return max_pwrlevel;
+        if (level > min_pwrlevel)
+                return min_pwrlevel;
+#endif
 	return level;
 }
 
@@ -119,28 +125,25 @@ void kgsl_pwrctrl_pwrlevel_change(struct kgsl_device *device,
 	int delta;
 	int level;
 
-#ifdef CONFIG_KGSL_GPU_CTRL
-	int diff = 0;
-#endif
-
 	/* Adjust the power level to the current constraints */
 	new_level = _adjust_pwrlevel(pwr, new_level);
-
-#ifdef CONFIG_KGSL_GPU_CTRL
-	diff = new_level - pwr->active_pwrlevel;
-#endif
 
 	if (new_level == pwr->active_pwrlevel)
 		return;
 
 	delta = new_level < pwr->active_pwrlevel ? -1 : 1;
 
-#ifdef CONFIG_KGSL_GPU_CTRL
-	printk("KGSL: %d, %d\n", new_level, pwr->active_pwrlevel);	
-#endif
 	update_clk_statistics(device, true);
 
 	level = pwr->active_pwrlevel;
+
+	/*
+	 * Set the active powerlevel first in case the clocks are off - if we
+	 * don't do this then the pwrlevel change won't take effect when the
+	 * clocks come back
+	 */
+
+	pwr->active_pwrlevel = new_level;
 
 	if (test_bit(KGSL_PWRFLAGS_CLK_ON, &pwr->power_flags) ||
 		(device->state == KGSL_STATE_NAP)) {
@@ -160,31 +163,10 @@ void kgsl_pwrctrl_pwrlevel_change(struct kgsl_device *device,
 		 */
 
 		while (level != new_level) {
-	        	/*
-       	 	 	 * Set the active powerlevel first in case the clocks are off - if we
-         	 	 * don't do this then the pwrlevel change won't take effect when the
-         	 	 * clocks come back
-          	 	 */
-
 			level += delta;
-			pwr->active_pwrlevel = level;
 			
 			clk_set_rate(pwr->grp_clks[0],
                                 pwr->pwrlevels[level].gpu_freq);
-
-#ifdef CONFIG_KGSL_GPU_CTRL
-			if(diff < 1) {
-				// SCALING UP
-				if (level == gpu_max_3d_freq_phase)
-					break;
-			
-			} else {
-				// SCALING DOWN
-				if(level == gpu_min_3d_freq_phase)
-					break;
-			}
-			printk("KGSL: %d, %d, %d\n", diff, pwr->pwrlevels[level].gpu_freq, level);
-#endif
 
 		}
 	}
