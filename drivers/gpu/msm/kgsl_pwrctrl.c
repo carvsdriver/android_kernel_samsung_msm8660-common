@@ -128,16 +128,13 @@ void kgsl_pwrctrl_pwrlevel_change(struct kgsl_device *device,
 	/* Adjust the power level to the current constraints */
 	new_level = _adjust_pwrlevel(pwr, new_level);
 
-	prink("1-New Level: %d, Active: %d, MHZ: %d\n", new_level,
+	printk("1-New Level: %d, Active: %d, MHZ: %d\n", new_level,
 		 pwr->active_pwrlevel, pwr->pwrlevels[pwr->active_pwrlevel].gpu_freq);
 
 	if (new_level == pwr->active_pwrlevel)
 		return;
 
 	delta = new_level < pwr->active_pwrlevel ? -1 : 1;
-
-        prink("1-New Level: %d, Delta: %d, Active: %d, MHZ: %d\n", new_level,
-                 delta, pwr->active_pwrlevel, pwr->pwrlevels[pwr->active_pwrlevel].gpu_freq);
 
 	update_clk_statistics(device, true);
 
@@ -177,7 +174,7 @@ void kgsl_pwrctrl_pwrlevel_change(struct kgsl_device *device,
 		}
 	}
 
-        prink("2-New Level: %d, Active: %d, MHZ: %d\n", new_level, 
+        printk("2-New Level: %d, Active: %d, MHZ: %d\n", new_level, 
                  pwr->active_pwrlevel, pwr->pwrlevels[pwr->active_pwrlevel].gpu_freq);
 
 	pwrlevel = &pwr->pwrlevels[pwr->active_pwrlevel];
