@@ -67,10 +67,10 @@ static ssize_t gpu_freq_store(struct kobject *kobj, struct kobj_attribute *attr,
 		else if(gpu_max_3d_freq_phase > gpu_min_3d_freq_phase)
 			gpu_max_3d_freq_phase = gpu_min_3d_freq_phase;
 
-	} else if strcmp(attr->attr.name, "gpu_min_3d_freq_phase") == 0) {
+	} else if (strcmp(attr->attr.name, "gpu_min_3d_freq_phase") == 0) {
 		sscanf(buf, "%du", &gpu_min_3d_freq_phase);
 
-		if(gpu_min_3d_freq_phase < 0 || gpu_min_3d_freq_phase < gpu_max_3d_freq_phase)
+		if (gpu_min_3d_freq_phase < 0 || gpu_min_3d_freq_phase < gpu_max_3d_freq_phase)
 			gpu_min_3d_freq_phase = 0;
 
 		else if(gpu_min_freq_phase > KGSL_3D_MIN_PHASE)
@@ -113,8 +113,8 @@ static int __init gpu_control_init(void)
 {
 	int retval;
 
-	gpu_2d_freq_phase = KGSL_2D_MAX_PHASE;
-	gpu_3d_freq_phase = KGSL_3D_MAX_PHASE;
+	gpu_max_2d_freq_phase = KGSL_2D_MAX_PHASE;
+	gpu_max_3d_freq_phase = KGSL_3D_MAX_PHASE;
 
         gpu_control_kobj = kobject_create_and_add("gpu_control", kernel_kobj);
         if (!gpu_control_kobj) {
