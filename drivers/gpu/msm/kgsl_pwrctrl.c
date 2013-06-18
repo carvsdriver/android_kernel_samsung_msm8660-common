@@ -135,6 +135,9 @@ void kgsl_pwrctrl_pwrlevel_change(struct kgsl_device *device,
 
 	delta = new_level < pwr->active_pwrlevel ? -1 : 1;
 
+#ifdef CONFIG_KGSL_GPU_CTRL
+	printk("KGSL: %d, %d\n", new_level, pwr->active_pwrlevel);	
+#endif
 	update_clk_statistics(device, true);
 
 	level = pwr->active_pwrlevel;
