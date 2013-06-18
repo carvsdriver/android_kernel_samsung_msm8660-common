@@ -11,10 +11,8 @@
  * GNU General Public License for more details.
  *
  * Purpose: This interface allows for user control over the GPU
- * clock settings.  This assumes that the appropriate modifications
- * have been made to suppor GPU over clocking in multiple phases.
+ * clock settings.
  *
- * To do: Document over clock settings here ...
  */
 
 #include <linux/kobject.h>
@@ -23,16 +21,29 @@
 #include <linux/slab.h>
 #include <linux/module.h>
 
-int gpu_2d_freq_phase;
-int gpu_3d_freq_phase;
+int gpu_max_2d_freq_phase;
+int gpu_min_2d_freq_phase;
+int gpu_max_3d_freq_phase;
+int gpu_min_3d_freq_phase;
 
 /* sysfs interface - allow for independent control of 2D & 3D frequencies */
 static ssize_t gpu_freq_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
 {
-	if(strcmp(attr->attr.name, "gpu_3d_freq_phase") == 0) {
-		return sprintf(buf, "%d\n", gpu_3d_freq_phase);
-	} else {
-		return sprintf(buf, "%d\n", gpu_2d_freq_phase);
+	if(strcmp(attr->attr.name, "gpu_max_3d_freq_phase") == 0) 
+	{
+		return sprintf(buf, "%d\n", gpu_max_3d_freq_phase);
+	}
+	else if(strcmp(attr->attr.name, "gpu_min_3d_freq_phase") == 0) 
+	{
+		return sprintf(buf, "%d\n", gpu_min_3d_freq_phase);
+	}
+	else if(strcmp(attr->attr.name, "gpu_min_2d_freq_phase") == 0)
+	{
+                return sprintf(buf, "%d\n", gpu_min_2d_freq_phase);
+        }
+	else
+	{
+		return sprintf(buf, "%d\n", gpu_max_2d_freq_phase);
 	}
 }
 
@@ -44,33 +55,51 @@ static ssize_t gpu_freq_store(struct kobject *kobj, struct kobj_attribute *attr,
 	 * range for either frequency table
 	 */
 
-	if (strcmp(attr->attr.name, "gpu_3d_freq_phase") == 0) {
-		sscanf(buf, "%du", &gpu_3d_freq_phase);
-		if(gpu_3d_freq_phase > KGSL_3D_MIN_PHASE)
-			gpu_3d_freq_phase = KGSL_3D_MIN_PHASE;
+	if (strcmp(attr->attr.name, "gpu_max_3d_freq_phase") == 0) {
+		sscanf(buf, "%du", &gpu_max_3d_freq_phase);
 
-		if(gpu_3d_freq_phase < 0)
-			gpu_3d_freq_phase = 0;
-	} else {
-                sscanf(buf, "%du", &gpu_2d_freq_phase);
-                if(gpu_2d_freq_phase > KGSL_2D_MIN_PHASE)
-                        gpu_2d_freq_phase = KGSL_2D_MIN_PHASE;
-        
-                if(gpu_3d_freq_phase < 0)
-                        gpu_2d_freq_phase = 0;
+                if(gpu_max_3d_freq_phase < 0)
+                        gpu_max_3d_freq_phase = 0;
+
+		else if(gpu_max_3d_freq_phase > KGSL_3D_MIN_PHASE)
+			gpu_max_3d_freq_phase = KGSL_3D_MIN_PHASE;
+
+		else if(gpu_max_3d_freq_phase > gpu_min_3d_freq_phase)
+			gpu_max_3d_freq_phase = gpu_min_3d_freq_phase;
+
+	} else if strcmp(attr->attr.name, "gpu_min_3d_freq_phase") == 0) {
+		sscanf(buf, "%du", &gpu_min_3d_freq_phase);
+
+		if(gpu_min_3d_freq_phase < 0 || gpu_min_3d_freq_phase < gpu_max_3d_freq_phase)
+			gpu_min_3d_freq_phase = 0;
+
+		else if(gpu_min_freq_phase > KGSL_3D_MIN_PHASE)
+			gpu_min_3d_freq_phase = KGSL_3D_MIN_PHASE;
 	}
+	/*
+	 * TODO ... add in the 2D crap ...
+	 */
+
 	return count;
 }
 
-static struct kobj_attribute gpu_2d_attribute =
-	__ATTR(gpu_2d_freq_phase, 0666, gpu_freq_show, gpu_freq_store);
+static struct kobj_attribute gpu_max_2d_attribute =
+	__ATTR(gpu_max_2d_freq_phase, 0666, gpu_freq_show, gpu_freq_store);
 
-static struct kobj_attribute gpu_3d_attribute =
-	__ATTR(gpu_3d_freq_phase, 0666, gpu_freq_show, gpu_freq_store);
+static struct kobj_attribute gpu_min_2d_attribute =
+        __ATTR(gpu_min_2d_freq_phase, 0666, gpu_freq_show, gpu_freq_store);
+
+static struct kobj_attribute gpu_max_3d_attribute =
+	__ATTR(gpu_max_3d_freq_phase, 0666, gpu_freq_show, gpu_freq_store);
+
+static struct kobj_attribute gpu_min_3d_attribute =
+        __ATTR(gpu_min_3d_freq_phase, 0666, gpu_freq_show, gpu_freq_store);
 
 static struct attribute *gpu_control_attributes[] = {
-	//&gpu_2d_attribute.attr,
-	&gpu_3d_attribute.attr,
+	//&gpu_max_2d_attribute.attr,
+	//&gpu_min_3d_attribute.attr,
+	&gpu_max_3d_attribute.attr,
+	&gpu_min_3d_attribute.attr,
 	NULL,
 };
 

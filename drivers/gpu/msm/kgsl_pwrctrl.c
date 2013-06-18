@@ -172,8 +172,16 @@ void kgsl_pwrctrl_pwrlevel_change(struct kgsl_device *device,
 			printk("KGSL freq: %d\n", pwr->pwrlevels[level].gpu_freq);
 		
 #ifdef CONFIG_KGSL_GPU_CTRL
-			if(diff < 1 && level  == gpu_3d_freq_phase)
+			if(diff < 1) {
+				// SCALING UP
+				if (level == gpu_max_3d_freq_phase)
 					break;
+			
+			} else {
+				// SCALING DOWN
+				if(level == gpu_min_3d_freq_phase)
+					break;
+			}				
 #endif
 
 		}

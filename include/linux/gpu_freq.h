@@ -16,8 +16,10 @@
 #ifndef _LINUX_GPUCONTROL_H
 #define _LINUX_GPUCONTROL_H
 
-extern int gpu_2d_freq_phase;
-extern int gpu_3d_freq_phase;
+extern int gpu_max_2d_freq_phase;
+extern int gpu_min_2d_freq_phase;
+extern int gpu_max_3d_freq_phase;
+extern int gpu_min_3d_freq_phase;
 
 // initialize at max power
 #define KGSL_3D_MAX_PHASE 0
