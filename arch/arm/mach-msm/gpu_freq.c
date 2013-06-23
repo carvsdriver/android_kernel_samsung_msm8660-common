@@ -58,7 +58,7 @@ static ssize_t gpu_freq_store(struct kobject *kobj, struct kobj_attribute *attr,
 	if (strcmp(attr->attr.name, "gpu_max_3d_freq_phase") == 0) {
 		sscanf(buf, "%du", &gpu_max_3d_freq_phase);
 
-#ifdef 0
+#if 0
                 if(gpu_max_3d_freq_phase < 0)
                         gpu_max_3d_freq_phase = 0;
 
@@ -72,7 +72,7 @@ static ssize_t gpu_freq_store(struct kobject *kobj, struct kobj_attribute *attr,
 	} else if (strcmp(attr->attr.name, "gpu_min_3d_freq_phase") == 0) {
 		sscanf(buf, "%du", &gpu_min_3d_freq_phase);
 
-#ifdef 0
+#if 0
 		if (gpu_min_3d_freq_phase < 0 || gpu_min_3d_freq_phase < gpu_max_3d_freq_phase)
 			gpu_min_3d_freq_phase = 0;
 
