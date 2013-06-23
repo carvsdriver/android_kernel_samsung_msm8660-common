@@ -104,10 +104,16 @@ static inline int _adjust_pwrlevel(struct kgsl_pwrctrl *pwr, int level)
 	int min_pwrlevel = max_t(int, pwr->thermal_pwrlevel, pwr->min_pwrlevel);
 
 #ifdef CONFIG_KGSL_GPU_CTRL
-	if (level < gpu_max_3d_freq_phase)
+	if (level >= gpu_max_3d_freq_phase)
+		return level;
+	else
 		return gpu_max_3d_freq_phase;
-	if (level > gpu_min_3d_freq_phase)
+
+	if (level <= gpu_min_3d_freq_phase)
+		return level;
+	else
 		return gpu_min_3d_freq_phase;
+
 #else
         if (level < max_pwrlevel)
                 return max_pwrlevel;
